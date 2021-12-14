@@ -1,5 +1,25 @@
 # Field-Cryptor-Java
+
 - Field-Cryptor is to help developers encrypt / decrypt designated field values conveniently
+- Supported cryptographic algorithms are listed below
+  - AES/CBC/NoPadding (128)
+  -  AES/CBC/PKCS5Padding (128)
+  -  AES/ECB/NoPadding (128)
+  -  AES/ECB/PKCS5Padding (128)
+  -  `[TBD]` ~~DES/CBC/NoPadding (56)~~ 
+  -  `[TBD]` ~~DES/CBC/PKCS5Padding (56)~~ 
+  -  `[TBD]` ~~DES/ECB/NoPadding (56)~~ 
+  -  `[TBD]` ~~DES/ECB/PKCS5Padding (56)~~ 
+  -  `[TBD]` ~~DESede/CBC/NoPadding (168)~~ 
+  -  `[TBD]` ~~DESede/CBC/PKCS5Padding (168)~~ 
+  -  `[TBD]` ~~DESede/ECB/NoPadding (168)~~ 
+  -  `[TBD]` ~~DESede/ECB/PKCS5Padding (168)~~ 
+  -  `[TBD]` ~~RSA/ECB/PKCS1Padding (1024, 2048)~~ 
+  -  `[TBD]` ~~RSA/ECB/OAEPWithSHA-1AndMGF1Padding (1024, 2048)~~ 
+  -  `[TBD]` ~~RSA/ECB/OAEPWithSHA-256AndMGF1Padding (1024, 2048)~~ 
+
+by [Oracle Cipher API](https://docs.oracle.com/javase/8/docs/api/javax/crypto/Cipher.html)
+
 
 v0.0.1
 
@@ -24,7 +44,7 @@ public class Person {
 ```java
 String cipherName = "Field-Cryptor";
 String key = "sampleAESKeyForDemoItIsEasyToUse";
-String iv = "sampleCBCinitVal";
+String iv = "sampleCBCinitVec";
 
 FieldCryptorFactory.addAESSpec(name, key, iv, 128, true);
 ```
