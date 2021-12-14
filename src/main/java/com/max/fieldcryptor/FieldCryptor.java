@@ -40,17 +40,16 @@ public class FieldCryptor {
             try {
                 final String data = task.apply(dataToWork);
                 field.setAccessible(true);
-                newObj = (T) obj.getClass().newInstance();
+                newObj = (T) ReflectionUtils.newInstance(obj.getClass());
+                ReflectionUtils.map(obj, newObj);
                 field.set(newObj, data);
-                return newObj;
             } catch (InstantiationException | IllegalAccessException e) {
-                System.out.println("e " + e.getLocalizedMessage());
-                throw new RuntimeException("");
+                log.error("need default constructor");
             } catch (Exception e) {
                 log.error(e.getLocalizedMessage());
                 throw new RuntimeException(e.getLocalizedMessage());
             }
         }
-        return newObj;
+        return (T) newObj;
     }
 }
