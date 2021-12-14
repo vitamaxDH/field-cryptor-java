@@ -3,6 +3,9 @@ package com.max.fieldcryptor;
 import com.max.fieldcryptor.lang.FunctionWithException;
 import com.sun.org.slf4j.internal.Logger;
 import com.sun.org.slf4j.internal.LoggerFactory;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
 
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
@@ -52,10 +55,10 @@ public class FieldCryptoUtil {
         return cipher;
     }
 
-//    public String encrypt(final byte[] key, final byte[] iv, final String msg) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
-//        final byte[] encrypted = this.encrypt(key, iv, msg.getBytes());
-//        return Base64.encodeBase64String(encrypted).trim();
-//    }
+    public String encrypt(final byte[] key, final byte[] iv, final String msg) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
+        final byte[] encrypted = this.encrypt(key, iv, msg.getBytes());
+        return Base64.encodeBase64String(encrypted).trim();
+    }
 
     public void encrypt(final byte[] key, final byte[] iv, final File srcFile, final File destFile) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, IOException, IllegalBlockSizeException, BadPaddingException {
 
@@ -84,10 +87,10 @@ public class FieldCryptoUtil {
         this.encrypt(key, iv, new File(srcPath), new File(destPath));
     }
 
-//    public String encryptToHexString(final byte[] key, final byte[] iv, final String msg) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
-//        final byte[] encrypted = this.encrypt(key, iv, msg.getBytes());
-//        return Hex.encodeHexString(encrypted);
-//    }
+    public String encryptToHexString(final byte[] key, final byte[] iv, final String msg) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
+        final byte[] encrypted = this.encrypt(key, iv, msg.getBytes());
+        return Hex.encodeHexString(encrypted);
+    }
 
     public byte[] decrypt(final byte[] key, final byte[] iv, final byte[] msg) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
         if (key.length != this.KEY_SIZE) {
@@ -134,10 +137,10 @@ public class FieldCryptoUtil {
         this.decrypt(key, iv, new File(srcPath), new File(destPath));
     }
 
-//    public String decryptHexString(final byte[] key, final byte[] iv, final String msg) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, DecoderException {
-//        final byte[] decodeMsg = Hex.decodeHex(msg.toCharArray());
-//        return new String(this.decrypt(key, iv, decodeMsg));
-//    }
+    public String decryptHexString(final byte[] key, final byte[] iv, final String msg) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, DecoderException {
+        final byte[] decodeMsg = Hex.decodeHex(msg.toCharArray());
+        return new String(this.decrypt(key, iv, decodeMsg));
+    }
 
     public byte[] generateRandomKey() throws NoSuchAlgorithmException {
         final KeyGenerator keygen = KeyGenerator.getInstance(this.ALGORITHM);
@@ -163,11 +166,10 @@ public class FieldCryptoUtil {
             try {
                 return fe.apply(data);
             } catch (Exception e) {
-                log.error(e.getLocalizedMessage());
+                e.printStackTrace();
                 throw new RuntimeException("Exception occurred.");
             }
         };
-
     }
 
 }

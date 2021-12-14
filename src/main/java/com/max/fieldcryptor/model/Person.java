@@ -9,6 +9,7 @@ public class Person {
 
     private String address;
 
+    @FieldCrypto
     private int age;
 
     public Person(String name, String address, int age) {

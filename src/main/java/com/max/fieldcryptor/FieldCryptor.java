@@ -8,20 +8,26 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.function.Function;
 
+import static com.max.fieldcryptor.FieldCryptoUtil.cipherWrapper;
+
 public class FieldCryptor {
 
     private static final Logger log = LoggerFactory.getLogger(FieldCryptor.class);
 
-    public static FieldCipher with(String key) {
-        return FieldCryptorFactory.getCipher(key);
+    private FieldCryptor(){}
+
+    private AESCipher cipher;
+
+    public static AESCipher init(String key) {
+        return CipherFactory.getCipher(key);
     }
 
-    public static <T> T decrypt(T obj, FieldCipher cipher) {
-        return taskTemplate(obj, FieldCryptoUtil.cipherWrapper(cipher::decrypt));
+    public static <T> T decryptFields(AESCipher cipher, T obj) {
+        return taskTemplate(obj, cipherWrapper(cipher::decrypt));
     }
 
-    public static <T> T encrypt(T obj, FieldCipher cipher) {
-        return taskTemplate(obj, FieldCryptoUtil.cipherWrapper(cipher::encrypt));
+    public static <T> T encryptFields(AESCipher cipher, T obj) {
+        return taskTemplate(obj, cipherWrapper(cipher::encrypt));
     }
 
     public static <T> T taskTemplate(T obj, Function<String, String> task) {
@@ -29,6 +35,9 @@ public class FieldCryptor {
 
         T newObj = null;
         for (Field field : allFields) {
+            if (field.getType() != String.class) {
+                continue;
+            }
             if (field.getAnnotation(FieldCrypto.class) == null) {
                 continue;
             }
@@ -50,6 +59,6 @@ public class FieldCryptor {
                 throw new RuntimeException(e.getLocalizedMessage());
             }
         }
-        return (T) newObj;
+        return newObj;
     }
 }
