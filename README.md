@@ -35,7 +35,7 @@ public class Person {
 
     @FieldCrypto
     String name;
-    
+    String address;
     int age;
 }
 ```
@@ -43,24 +43,30 @@ public class Person {
 2. Add crypto properties to create a cipher
 ```java
 String cipherName = "Field-Cryptor";
+CryptographicAlgorithm algorithm = CryptographicAlgorithm.AES_CBC_PKCS5_PADDING;
 String key = "sampleAESKeyForDemoItIsEasyToUse";
 String iv = "sampleCBCinitVec";
 
-FieldCryptorFactory.addAESSpec(name, key, iv, 128, true);
+CipherFactory.addAESSpec(cipherKeyName, algorithm, key, iv, true);
 ```
 
 
 
 3. Get the cipher from FieldCryptorFactory and encrypt / decrypt
 ```java
-FieldCipher cipher = FieldCryptorFactory.getCipher(name);
-Person person = new Person("VitaMax", 50);
-Person encryptedObj = FieldCryptor.encrypt(person, cipher);
+AESCipher cipher = CipherFactory.getCipher(cipherKeyName);
+Person person = new Person("VitaMax", "Suwon", 50);
+
+Person encryptedObj = FieldCryptor.encryptFields(cipher, person);
+Person decryptedObj = FieldCryptor.decryptFields(cipher, encryptedObj);
 ```
 
 4. Check the result
 ```java
 System.out.println("encryptedObj = " + encryptedObj);
+System.out.println("decryptedObj = " + decryptedObj);
 ```
 
->Person{name='hZATRdJUr7WqqnYdR9uKMA==', age=50}
+>encryptedObj = Person{name='ocWec2FvMBH7ytkZaQTbgw==', address='Suwon', age=50}
+> 
+>decryptedObj = Person{name='VitaMax', address='Suwon', age=50}

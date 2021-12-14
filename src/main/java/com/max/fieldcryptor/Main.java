@@ -14,8 +14,8 @@ public class Main {
         String iv = UUID.randomUUID().toString().substring(0, 16);
 
         CipherFactory.addAESSpec(cipherKeyName, algorithm, key, iv, true);
-        AESCipher cipher = CipherFactory.getCipher(cipherKeyName);
 
+        AESCipher cipher = CipherFactory.getCipher(cipherKeyName);
         Person person = new Person("VitaMax", "Suwon", 50);
 
         long start = System.currentTimeMillis();
@@ -23,10 +23,10 @@ public class Main {
         System.out.println("first time elapsed " + (System.currentTimeMillis() - start));
 
         start = System.currentTimeMillis();
-        Person decrypted = FieldCryptor.decryptFields(cipher, encryptedObj);
+        Person decryptedObj = FieldCryptor.decryptFields(cipher, encryptedObj);
         System.out.println("second time elapsed " + (System.currentTimeMillis() - start));
 
         System.out.println("encryptedObj = " + encryptedObj);
-        System.out.println("encryptedObj = " + decrypted);
+        System.out.println("decryptedObj = " + decryptedObj);
     }
 }
