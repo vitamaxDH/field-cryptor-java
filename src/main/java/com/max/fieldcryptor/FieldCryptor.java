@@ -16,8 +16,6 @@ public class FieldCryptor {
 
     private FieldCryptor(){}
 
-    private AESCipher cipher;
-
     public static AESCipher init(String key) {
         return CipherFactory.getCipher(key);
     }
@@ -38,7 +36,8 @@ public class FieldCryptor {
             if (field.getType() != String.class) {
                 continue;
             }
-            if (field.getAnnotation(FieldCrypto.class) == null) {
+            FieldCrypto fieldCrypto = field.getAnnotation(FieldCrypto.class);
+            if (fieldCrypto == null || fieldCrypto.exclude()) {
                 continue;
             }
             final String dataToWork = ReflectionUtils.getFieldValue(obj, field.getName());
