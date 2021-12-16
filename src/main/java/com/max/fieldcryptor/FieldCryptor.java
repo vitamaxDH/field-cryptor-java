@@ -29,13 +29,10 @@ public class FieldCryptor {
     }
 
     public static <T> T taskTemplate(T obj, Function<String, String> task) {
-        final List<Field> allFields = ReflectionUtils.getAllFields(obj);
+        final List<Field> allFields = ReflectionUtils.getAllFieldsByTypes(obj, String.class);
 
         T newObj = null;
         for (Field field : allFields) {
-            if (field.getType() != String.class) {
-                continue;
-            }
             FieldCrypto fieldCrypto = field.getAnnotation(FieldCrypto.class);
             if (fieldCrypto == null || fieldCrypto.exclude()) {
                 continue;

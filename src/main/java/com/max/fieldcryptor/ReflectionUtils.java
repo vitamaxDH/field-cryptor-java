@@ -4,12 +4,14 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.lang.reflect.Modifier.isFinal;
 
 public class ReflectionUtils {
 
     private static final Map<Class<?>, List<Field>> fieldsCache = new HashMap<>();
+    private static final Map<Class<?>, List<Field>> fieldsCacheForCryptor = new HashMap<>();
     private static final Map<Class<?>, Boolean> hasDefaultConstructorCache = new HashMap<>();
     private static final Map<Class<?>, Object[]> defaultValuesCache = new HashMap<>();
 
@@ -28,6 +30,30 @@ public class ReflectionUtils {
         }
         fieldsCache.put(clazz, fields);
         return fields;
+    }
+
+    public static <T> List<Field> getAllFieldsByTypes(T t, Class<?>... classes){
+        Class<?> clazz = t.getClass();
+        if (fieldsCacheForCryptor.containsKey(clazz)){
+            return fieldsCacheForCryptor.get(clazz);
+        }
+        List<Field> fieldsByTypes = getAllFields(t).stream()
+                .filter(field -> anyType(field, classes))
+                .collect(Collectors.toList());
+        fieldsCacheForCryptor.put(clazz, fieldsByTypes);
+        return fieldsByTypes;
+    }
+
+    private static boolean anyType(Field field, Class<?>... classes){
+        if (classes.length == 0){
+            return false;
+        }
+        for (Class<?> clazz : classes){
+            if (field.getType() == clazz){
+                return true;
+            }
+        }
+        return false;
     }
 
     public static <T> Field getFieldByName(T t, String fieldName) {
