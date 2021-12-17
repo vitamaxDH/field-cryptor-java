@@ -1,4 +1,4 @@
-package com.max.fieldcryptor.model;
+package com.max.fieldcryptor;
 
 import com.max.fieldcryptor.annot.FieldCrypto;
 
@@ -21,6 +21,33 @@ public class Person {
         this.age = age;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public Person setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public Person setAddress(String address) {
+        this.address = address;
+        return this;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public Person setAge(int age) {
+        this.age = age;
+        return this;
+    }
+
     @Override
     public String toString() {
         return "Person{" +
@@ -30,7 +57,4 @@ public class Person {
                 '}';
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 }

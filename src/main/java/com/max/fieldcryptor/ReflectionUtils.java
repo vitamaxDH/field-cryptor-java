@@ -1,14 +1,14 @@
 package com.max.fieldcryptor;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 import static java.lang.reflect.Modifier.isFinal;
 
 public class ReflectionUtils {
-
-    // TODO : Needs an object for caching
-    private static final Map<Class<?>, Boolean> hasDefaultConstructorCache = new HashMap<>();
 
     public static <T> List<Field> getFields(T t) {
         Objects.requireNonNull(t);
@@ -16,11 +16,10 @@ public class ReflectionUtils {
         Class<?> clazz = t.getClass();
 
         final List<Field> fields = new ArrayList<>();
-        while (clazz != null) {    // 1. 상위 클래스가 null 이 아닐때까지 모든 필드를 list 에 담는다.
+        while (clazz != null) {
             fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
             clazz = clazz.getSuperclass();
         }
-//        fieldsCache.put(clazz, fields);
         return fields;
     }
 
@@ -42,12 +41,12 @@ public class ReflectionUtils {
         Field field = null;
         for (Field f : getFields(t)) {
             if (f.getName().equals(fieldName)) {
-                field = f;    // 2. 모든 필드들로부터 fieldName이 일치하는 필드 추출
+                field = f;
                 break;
             }
         }
         if (field != null) {
-            field.setAccessible(true);    // 3. 접근 제어자가 private 일 경우
+            field.setAccessible(true);
         }
 
         return field;
@@ -69,8 +68,8 @@ public class ReflectionUtils {
         final List<Field> sourceFields = getFields(source);
         final List<Field> targetFields =
                 source.getClass() == target.getClass() ?
-                new ArrayList<>(sourceFields) :
-                getFields(target);
+                        new ArrayList<>(sourceFields) :
+                        getFields(target);
 
         sourceFields.forEach(sourceField ->
                 targetFields.stream()
