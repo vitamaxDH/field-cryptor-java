@@ -57,8 +57,8 @@ CipherFactory.addAESSpec(cipherKeyName, algorithm, key, iv, true);
 AESCipher cipher = CipherFactory.getCipher(cipherKeyName);
 Person person = new Person("VitaMax", "Suwon", 50);
 
-Person encryptedObj = FieldCryptor.encryptFields(cipher, person);
-Person decryptedObj = FieldCryptor.decryptFields(cipher, encryptedObj);
+Person encryptedObj = FieldCryptor.encryptFields(cipher, person, Person::new);
+Person decryptedObj = FieldCryptor.decryptFields(cipher, encryptedObj, Person::new);
 ```
 
 4. Check the result
