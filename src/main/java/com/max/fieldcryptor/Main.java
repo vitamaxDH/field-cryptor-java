@@ -1,7 +1,7 @@
 package com.max.fieldcryptor;
 
-import com.max.fieldcryptor.type.CryptographicAlgorithm;
 import com.max.fieldcryptor.model.Person;
+import com.max.fieldcryptor.type.CryptographicAlgorithm;
 
 import java.util.UUID;
 
@@ -18,13 +18,13 @@ public class Main {
         AESCipher cipher = CipherFactory.getCipher(cipherKeyName);
         Person person = new Person("VitaMax", "Suwon", 50);
 
-        long start = System.currentTimeMillis();
-        Person encryptedObj = FieldCryptor.encryptFields(cipher, person);
-        System.out.println("first time elapsed " + (System.currentTimeMillis() - start));
+        long start = System.nanoTime();
+        Person encryptedObj = FieldCryptor.encryptFields(cipher, person, Person::new);
+        System.out.println("first time elapsed " + (System.nanoTime() - start));
 
-        start = System.currentTimeMillis();
-        Person decryptedObj = FieldCryptor.decryptFields(cipher, encryptedObj);
-        System.out.println("second time elapsed " + (System.currentTimeMillis() - start));
+        start = System.nanoTime();
+        Person decryptedObj = FieldCryptor.decryptFields(cipher, encryptedObj, Person::new);
+        System.out.println("second time elapsed " + (System.nanoTime() - start));
 
         System.out.println("encryptedObj = " + encryptedObj);
         System.out.println("decryptedObj = " + decryptedObj);

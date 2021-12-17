@@ -12,10 +12,10 @@ public class Person {
     @FieldCrypto
     private int age;
 
+    public Person() {
+    }
+
     public Person(String name, String address, int age) {
-        if (name == null || address == null){
-            throw new RuntimeException("");
-        }
         this.name = name;
         this.address = address;
         this.age = age;
@@ -30,7 +30,7 @@ public class Person {
                 '}';
     }
 
-    public void setName (String name){
+    public void setName(String name) {
         this.name = name;
     }
 }

@@ -11,19 +11,19 @@ public class PrimitiveDefaults {
     private static double DEFAULT_DOUBLE;
 
     public static Object getDefaultValue(Class clazz) {
-        if (clazz.equals(boolean.class)) {
+        if (clazz == boolean.class) {
             return DEFAULT_BOOLEAN;
-        } else if (clazz.equals(byte.class)) {
+        } else if (clazz == byte.class) {
             return DEFAULT_BYTE;
-        } else if (clazz.equals(short.class)) {
+        } else if (clazz == short.class) {
             return DEFAULT_SHORT;
-        } else if (clazz.equals(int.class)) {
+        } else if (clazz == int.class) {
             return DEFAULT_INT;
-        } else if (clazz.equals(long.class)) {
+        } else if (clazz == long.class) {
             return DEFAULT_LONG;
-        } else if (clazz.equals(float.class)) {
+        } else if (clazz == float.class) {
             return DEFAULT_FLOAT;
-        } else if (clazz.equals(double.class)) {
+        } else if (clazz == double.class) {
             return DEFAULT_DOUBLE;
         } else {
             throw new IllegalArgumentException(

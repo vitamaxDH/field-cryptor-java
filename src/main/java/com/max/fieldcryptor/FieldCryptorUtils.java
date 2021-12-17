@@ -14,15 +14,22 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
-public class FieldCryptoUtil {
+public class FieldCryptorUtils {
 
-    private static final Logger log = LoggerFactory.getLogger(FieldCryptoUtil.class);
+    private static final Logger log = LoggerFactory.getLogger(FieldCryptorUtils.class);
+
+    private static final Map<Class<?>, CryptorReflectionResult> cacheMap = new HashMap<>();
 
     private String CIPHER_TRANSFORMATION;
     private String ALGORITHM;
@@ -30,12 +37,16 @@ public class FieldCryptoUtil {
     private int KEY_SIZE;
     private int IV_SIZE;
 
-    public FieldCryptoUtil() {
+    public FieldCryptorUtils() {
         this.CIPHER_TRANSFORMATION = "AES/CBC/PKCS5Padding";
         this.ALGORITHM = "AES";
         this.BUFFER_SIZE = 1024;
         this.KEY_SIZE = 32;
         this.IV_SIZE = 16;
+    }
+
+    public static <T> CryptorReflectionResult getReflectionResult(T obj) {
+        return cacheMap.getOrDefault(obj.getClass(), CryptorReflectionResult.from(obj));
     }
 
     public byte[] encrypt(final byte[] key, final byte[] iv, final byte[] msg) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
@@ -159,6 +170,12 @@ public class FieldCryptoUtil {
 
     public void setCipherTransformation(final String cipherTrnasformation) {
         this.CIPHER_TRANSFORMATION = cipherTrnasformation;
+    }
+
+    public static <T> List<Field> getStringFields(T t) {
+        return ReflectionUtils.getFields(t).stream()
+                .filter(field -> ReflectionUtils.anyType(field, String.class))
+                .collect(Collectors.toList());
     }
 
     public static <T, R, E extends Exception> Function<T, R> cipherWrapper(FunctionWithException<T, R, E> fe) {
