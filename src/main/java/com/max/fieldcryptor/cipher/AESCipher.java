@@ -1,4 +1,4 @@
-package com.max.fieldcryptor;
+package com.max.fieldcryptor.cipher;
 
 import com.max.fieldcryptor.type.CryptographicAlgorithm;
 import com.sun.org.slf4j.internal.Logger;
@@ -12,25 +12,12 @@ import java.util.Base64;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-public class AESCipher {
+public class AESCipher extends AbstractCipher {
 
     private static final Logger log = LoggerFactory.getLogger(AESCipher.class);
 
-    private final CryptographicAlgorithm algorithm;
-    private final String key;
-    private final String iv;
-    private final boolean enabled;
-
-    private final static String AES = "AES";
-
     public AESCipher(CryptographicAlgorithm algorithm, String key, String iv, boolean enabled) {
-        this.algorithm = algorithm;
-        this.key = key;
-        this.iv = iv;
-        this.enabled = enabled;
-        if (algorithm.needsIV() && iv == null) {
-            throw new IllegalArgumentException("IV (initial vector) must not be null for padding algorithms");
-        }
+        super(algorithm, key, iv, enabled);
     }
 
     private SecretKeySpec getKey() throws Exception {
@@ -44,7 +31,7 @@ public class AESCipher {
 
         System.arraycopy(bytes, 0, keyBytes, 0, len);
 
-        return new SecretKeySpec(keyBytes, AES);
+        return new SecretKeySpec(keyBytes, ALGORITHM);
     }
 
     private Cipher getCipher(int cipherMode) throws Exception {
@@ -59,25 +46,23 @@ public class AESCipher {
         return cipher;
     }
 
-    // 암호화
-    public String encrypt(String str) throws Exception {
+    public String encrypt(String plainStr) throws Exception {
         if (!this.enabled) {
-            return str;
+            return plainStr;
         }
 
         Cipher cipher = getCipher(Cipher.ENCRYPT_MODE);
-        byte[] encrypted = cipher.doFinal(str.getBytes(UTF_8));
+        byte[] encrypted = cipher.doFinal(plainStr.getBytes(UTF_8));
         return Base64.getEncoder().encodeToString(encrypted);
     }
 
-    // 복호화
-    public String decrypt(String enStr) throws Exception {
+    public String decrypt(String encryptedStr) throws Exception {
         if (!this.enabled) {
-            return enStr;
+            return encryptedStr;
         }
 
         Cipher cipher = getCipher(Cipher.DECRYPT_MODE);
-        byte[] decodedBytes = Base64.getDecoder().decode(enStr);
+        byte[] decodedBytes = Base64.getDecoder().decode(encryptedStr);
         return new String(cipher.doFinal(decodedBytes), UTF_8);
     }
 

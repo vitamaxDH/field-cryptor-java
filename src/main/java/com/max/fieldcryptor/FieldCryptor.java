@@ -1,6 +1,7 @@
 package com.max.fieldcryptor;
 
 import com.max.fieldcryptor.annot.FieldCrypto;
+import com.max.fieldcryptor.cipher.AbstractCipher;
 import com.sun.org.slf4j.internal.Logger;
 import com.sun.org.slf4j.internal.LoggerFactory;
 
@@ -18,19 +19,19 @@ public class FieldCryptor {
     private FieldCryptor() {
     }
 
-    public static <T> T decryptFields(AESCipher cipher, T source, Supplier<T> supplier) {
+    public static <T> T decryptFields(AbstractCipher cipher, T source, Supplier<T> supplier) {
         return taskTemplate(source, supplier.get(), cipherWrapper(cipher::decrypt));
     }
 
-    public static <T> T decryptFields(AESCipher cipher, T source, T target) {
+    public static <T> T decryptFields(AbstractCipher cipher, T source, T target) {
         return taskTemplate(source, target, cipherWrapper(cipher::decrypt));
     }
 
-    public static <T> T encryptFields(AESCipher cipher, T source, Supplier<T> supplier) {
+    public static <T> T encryptFields(AbstractCipher cipher, T source, Supplier<T> supplier) {
         return taskTemplate(source, supplier.get(), cipherWrapper(cipher::encrypt));
     }
 
-    public static <T> T encryptFields(AESCipher cipher, T source, T target) {
+    public static <T> T encryptFields(AbstractCipher cipher, T source, T target) {
         return taskTemplate(source, target, cipherWrapper(cipher::encrypt));
     }
 

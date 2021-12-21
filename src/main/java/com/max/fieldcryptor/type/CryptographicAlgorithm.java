@@ -44,4 +44,9 @@ public enum CryptographicAlgorithm {
     public boolean needsIV() {
         return needsIV;
     }
+
+    public String getCryptAlgorithmString(){
+        return algorithm.split("/")[0];
+    }
+
 }

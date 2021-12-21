@@ -1,5 +1,6 @@
 package com.max.fieldcryptor;
 
+import com.max.fieldcryptor.cipher.AbstractCipher;
 import com.max.fieldcryptor.type.CryptographicAlgorithm;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -18,7 +19,7 @@ class CipherFactoryTest {
             String key = UUID.randomUUID().toString().substring(0, 32);
             String iv = UUID.randomUUID().toString().substring(0, 16);
 
-            CipherFactory.addAESSpec(algorithm.toString(), algorithm, key, iv, true);
+            CipherFactory.addCipher(algorithm.toString(), algorithm, key, iv, true);
         }
     }
 
@@ -26,7 +27,7 @@ class CipherFactoryTest {
     @DisplayName("Check cbc pkcs5 padding cipher")
     public void getCipher() {
         String cipherKeyName = CryptographicAlgorithm.AES_CBC_PKCS5_PADDING.toString();
-        AESCipher cipher = CipherFactory.getCipher(cipherKeyName);
+        AbstractCipher cipher = CipherFactory.getCipher(cipherKeyName);
         assertNotNull(cipher);
     }
 
@@ -36,7 +37,7 @@ class CipherFactoryTest {
         String name = "Daehan";
         String address = "Republic of Korea";
         Person person = new Person(name, address, 55);
-        AESCipher cipher = CipherFactory.getCipher(CryptographicAlgorithm.AES_CBC_PKCS5_PADDING.toString());
+        AbstractCipher cipher = CipherFactory.getCipher(CryptographicAlgorithm.AES_CBC_PKCS5_PADDING.toString());
 
         // when
         Person encrypted = FieldCryptor.encryptFields(cipher, person, Person::new);
@@ -51,7 +52,7 @@ class CipherFactoryTest {
         String name = "Daehan";
         String address = "Republic of Korea";
         Person person = new Person(name, address, 55);
-        AESCipher cipher = CipherFactory.getCipher(CryptographicAlgorithm.AES_CBC_PKCS5_PADDING.toString());
+        AbstractCipher cipher = CipherFactory.getCipher(CryptographicAlgorithm.AES_CBC_PKCS5_PADDING.toString());
 
         // when
         person.setName(cipher.encrypt(name));
