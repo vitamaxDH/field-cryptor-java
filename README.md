@@ -47,14 +47,14 @@ CryptographicAlgorithm algorithm = CryptographicAlgorithm.AES_CBC_PKCS5_PADDING;
 String key = "sampleAESKeyForDemoItIsEasyToUse";
 String iv = "sampleCBCinitVec";
 
-CipherFactory.addAESSpec(cipherKeyName, algorithm, key, iv, true);
+CipherFactory.addCipher(cipherKeyName, algorithm, key, iv, true);
 ```
 
 
 
 3. Get the cipher from FieldCryptorFactory and encrypt / decrypt
 ```java
-AESCipher cipher = CipherFactory.getCipher(cipherKeyName);
+AbstractCipher cipher = CipherFactory.getCipher(cipherKeyName);
 Person person = new Person("VitaMax", "Suwon", 50);
 
 Person encryptedObj = FieldCryptor.encryptFields(cipher, person, Person::new);
