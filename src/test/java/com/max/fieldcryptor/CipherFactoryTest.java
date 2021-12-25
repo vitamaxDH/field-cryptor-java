@@ -76,6 +76,7 @@ class CipherFactoryTest {
         Person encrypted = FieldCryptorUtils.encrypt(person, Person::new, cipherWrapper(cipher::encrypt));
 
         // then
+        System.out.println(encrypted);
         Assertions.assertNotEquals(name, encrypted.getName());
     }
 
@@ -90,6 +91,30 @@ class CipherFactoryTest {
 
         // then
         Assertions.assertEquals(name, decrypted.getName());
+    }
+
+    @Test
+    @DisplayName("타입의 암/복호화 테스트")
+    public void fieldCryptoOnTypeTest() throws Exception {
+        // given
+        String vendor = "HYUNDAI";
+        String designer = "Daehan";
+        String madeIn = "Korea";
+        int numberOfWheels = 4;
+        Car plainCar = new Car(vendor, designer, madeIn, numberOfWheels);
+
+        // when
+        FieldCryptor fc = FieldCryptor.from(cipher);
+        Car encrypted = fc.encrypt(plainCar, Car::new);
+
+        // then
+        System.out.println(plainCar);
+        System.out.println(encrypted);
+
+        Assertions.assertEquals(encrypted.getVendor(), cipher.encrypt(vendor));
+        Assertions.assertEquals(encrypted.getDesigner(), cipher.encrypt(designer));
+        Assertions.assertEquals(plainCar.getMadeIn(), encrypted.getMadeIn());
+        Assertions.assertEquals(encrypted.getNumberOfWheels(), numberOfWheels);
     }
 
     public <T, R, E extends Exception> Function<T, R> cipherWrapper(FunctionWithException<T, R, E> fe) {

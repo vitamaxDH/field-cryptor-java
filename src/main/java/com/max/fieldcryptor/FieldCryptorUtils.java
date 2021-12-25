@@ -12,7 +12,7 @@ public class FieldCryptorUtils {
 
     private static final Logger log = LoggerFactory.getLogger(FieldCryptorUtils.class);
 
-    private static final Map<Class<?>, StringFields> cacheMap = new HashMap<>();
+    private static final Map<Class<?>, ClassifiedFields> cacheMap = new HashMap<>();
 
     /**
      * get string fields of an object's class in parameter.
@@ -21,8 +21,8 @@ public class FieldCryptorUtils {
      * @param <T>
      * @return
      */
-    public static <T> StringFields getStringFields(T obj) {
-        return cacheMap.getOrDefault(obj.getClass(), StringFields.from(obj));
+    public static <T> ClassifiedFields getClassifiedFields(T obj) {
+        return cacheMap.getOrDefault(obj.getClass(), ClassifiedFields.from(obj));
     }
 
     public static <T> T encrypt(T source, Supplier<T> supplier, Function<String, String> customEncrypt) {

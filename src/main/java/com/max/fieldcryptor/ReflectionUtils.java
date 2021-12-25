@@ -23,18 +23,6 @@ public class ReflectionUtils {
         return fields;
     }
 
-    public static boolean anyType(Field field, Class<?>... classes) {
-        if (classes.length == 0) {
-            return false;
-        }
-        for (Class<?> clazz : classes) {
-            if (field.getType() == clazz) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public static <T> Field getFieldByName(T t, String fieldName) {
         Objects.requireNonNull(t);
 
@@ -85,4 +73,8 @@ public class ReflectionUtils {
         return !isFinal(field.getModifiers());
     }
 
+    public static <T> void map(Field field, T source, T target) throws IllegalAccessException {
+        Object fieldValue = field.get(source);
+        field.set(target, fieldValue);
+    }
 }

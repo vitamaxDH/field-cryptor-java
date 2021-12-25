@@ -1,6 +1,5 @@
 package com.max.fieldcryptor;
 
-import com.max.fieldcryptor.annot.FieldCrypto;
 import com.max.fieldcryptor.cipher.AbstractCipher;
 import com.max.fieldcryptor.lang.FunctionWithException;
 import com.sun.org.slf4j.internal.Logger;
@@ -53,29 +52,37 @@ public class FieldCryptor {
     }
 
     public static <T> T taskTemplate(T source, T target, Function<String, String> task) {
-        final StringFields reflectionResult = FieldCryptorUtils.getStringFields(source);
-        final List<Field> stringFields = reflectionResult.stringFields();
+        final ClassifiedFields classifiedFields = FieldCryptorUtils.getClassifiedFields(source);
 
-        for (Field field : stringFields) {
-            FieldCrypto fieldCrypto = field.getAnnotation(FieldCrypto.class);
-            if (fieldCrypto == null || fieldCrypto.exclude()) {
-                continue;
+        taskOnCryptoFields(source, target, task, classifiedFields.getCryptoFields());
+        mapPlainFields(source, target, classifiedFields.getOtherFields());
+
+        return target;
+    }
+
+    private static <T> void mapPlainFields(T source, T target, List<Field> otherFields) {
+        for (Field field : otherFields) {
+            try {
+                ReflectionUtils.map(field, source, target);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
             }
+        }
+    }
+
+    private static <T> void taskOnCryptoFields(T source, T target, Function<String, String> task, List<Field> cryptoFields) {
+        for (Field field : cryptoFields) {
             final String dataToWork = ReflectionUtils.getFieldValue(source, field.getName());
             if (dataToWork == null) {
                 continue;
             }
-
             try {
                 final String data = task.apply(dataToWork);
-                field.setAccessible(true);
-                ReflectionUtils.map(source, target);
                 field.set(target, data);
             } catch (Exception e) {
                 log.error(e.getLocalizedMessage());
                 throw new RuntimeException(e.getLocalizedMessage());
             }
         }
-        return target;
     }
 }
