@@ -38,18 +38,11 @@ public class ReflectionUtils {
     public static <T> Field getFieldByName(T t, String fieldName) {
         Objects.requireNonNull(t);
 
-        Field field = null;
-        for (Field f : getFields(t)) {
-            if (f.getName().equals(fieldName)) {
-                field = f;
-                break;
-            }
-        }
-        if (field != null) {
-            field.setAccessible(true);
-        }
-
-        return field;
+        return getFields(t).stream()
+                .filter(f -> f.getName().equals(fieldName))
+                .peek(f -> f.setAccessible(true))
+                .findFirst()
+                .orElse(null);
     }
 
     public static <T> T getFieldValue(Object obj, String fieldName) {
