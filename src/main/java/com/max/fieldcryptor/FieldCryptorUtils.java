@@ -3,42 +3,26 @@ package com.max.fieldcryptor;
 import com.sun.org.slf4j.internal.Logger;
 import com.sun.org.slf4j.internal.LoggerFactory;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public class FieldCryptorUtils {
 
     private static final Logger log = LoggerFactory.getLogger(FieldCryptorUtils.class);
 
-    private static final Map<Class<?>, CryptorReflectionResult> cacheMap = new HashMap<>();
+    private static final Map<Class<?>, StringFields> cacheMap = new HashMap<>();
 
-//    private String CIPHER_TRANSFORMATION;
-//    private String ALGORITHM;
-//    private int BUFFER_SIZE;
-//    private int KEY_SIZE;
-//    private int IV_SIZE;
-//
-//    public FieldCryptorUtils() {
-//        this.CIPHER_TRANSFORMATION = "AES/CBC/PKCS5Padding";
-//        this.ALGORITHM = "AES";
-//        this.BUFFER_SIZE = 1024;
-//        this.KEY_SIZE = 32;
-//        this.IV_SIZE = 16;
-//    }
-
-    public static <T> CryptorReflectionResult getReflectionResult(T obj) {
-        return cacheMap.getOrDefault(obj.getClass(), CryptorReflectionResult.from(obj));
-    }
-
-    public static <T> List<Field> getStringFields(T t) {
-        return ReflectionUtils.getFields(t).stream()
-                .filter(field -> ReflectionUtils.anyType(field, String.class))
-                .collect(Collectors.toList());
+    /**
+     * get string fields of an object's class in parameter.
+     *
+     * @param obj
+     * @param <T>
+     * @return
+     */
+    public static <T> StringFields getStringFields(T obj) {
+        return cacheMap.getOrDefault(obj.getClass(), StringFields.from(obj));
     }
 
     public static <T> T encrypt(T source, Supplier<T> supplier, Function<String, String> customEncrypt) {
@@ -56,7 +40,6 @@ public class FieldCryptorUtils {
     public static <T> T decrypt(T source, T target, Function<String, String> customDecrypt) {
         return FieldCryptor.taskTemplate(source, target, customDecrypt);
     }
-
 
 //    public byte[] encrypt(final byte[] key, final byte[] iv, final byte[] msg) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
 //        Cipher cipher = createCipher(key, iv);

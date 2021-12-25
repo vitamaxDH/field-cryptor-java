@@ -53,7 +53,7 @@ public class FieldCryptor {
     }
 
     public static <T> T taskTemplate(T source, T target, Function<String, String> task) {
-        final CryptorReflectionResult reflectionResult = FieldCryptorUtils.getReflectionResult(source);
+        final StringFields reflectionResult = FieldCryptorUtils.getStringFields(source);
         final List<Field> stringFields = reflectionResult.stringFields();
 
         for (Field field : stringFields) {
