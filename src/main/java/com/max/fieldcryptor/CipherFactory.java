@@ -16,17 +16,21 @@ public class CipherFactory {
 
     private static final Map<String, AbstractCipher> cipherMap = new HashMap<>();
 
-    public String encrypt(String cipherKeyName, String plainText) throws Exception {
-        return getCipher(cipherKeyName).encrypt(plainText);
-    }
-
-    public String decrypt(String cipherKeyName, String cipherText) throws Exception {
-        return getCipher(cipherKeyName).decrypt(cipherText);
-    }
-
     public static void addCipher(String cipherKeyName, CryptographicAlgorithm algorithm, String key, String iv, boolean enabled) {
+        final AbstractCipher cipher = createCipher(algorithm, key, iv, enabled);
+        cipherMap.putIfAbsent(cipherKeyName, cipher);
+    }
+
+    public static AbstractCipher getCipher(String cryptoTarget) {
+        if (cipherMap.containsKey(cryptoTarget)) {
+            return cipherMap.get(cryptoTarget);
+        }
+        throw new IllegalArgumentException("Unknown Crypto Target: " + cryptoTarget);
+    }
+
+    public static AbstractCipher createCipher(CryptographicAlgorithm algorithm, String key, String iv, boolean enabled) {
         AbstractCipher cipher = null;
-        switch (algorithm){
+        switch (algorithm) {
             case AES_ECB_NO_PADDING:
             case AES_ECB_PKCS5_PADDING:
             case AES_CBC_NO_PADDING:
@@ -36,20 +40,7 @@ public class CipherFactory {
             default:
                 log.debug(algorithm + " has not been implemented yet");
         }
-
-
-        cipherMap.putIfAbsent(cipherKeyName, cipher);
-    }
-
-    public static AbstractCipher getCipher(String cryptoTarget) {
-        if (cipherMap.containsKey(cryptoTarget)) {
-            return cipherMap.get(cryptoTarget);
-        }
-        throw new RuntimeException("Unknown Crypto Target: " + cryptoTarget);
-    }
-
-    public AESCipher createCipher(CryptographicAlgorithm algorithm, String key, String iv) {
-        return new AESCipher(algorithm, key, iv, true);
+        return cipher;
     }
 
 

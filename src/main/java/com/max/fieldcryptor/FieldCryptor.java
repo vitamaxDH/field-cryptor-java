@@ -2,6 +2,7 @@ package com.max.fieldcryptor;
 
 import com.max.fieldcryptor.annot.FieldCrypto;
 import com.max.fieldcryptor.cipher.AbstractCipher;
+import com.max.fieldcryptor.lang.FunctionWithException;
 import com.sun.org.slf4j.internal.Logger;
 import com.sun.org.slf4j.internal.LoggerFactory;
 
@@ -10,29 +11,45 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.max.fieldcryptor.FieldCryptorUtils.cipherWrapper;
-
 public class FieldCryptor {
 
     private static final Logger log = LoggerFactory.getLogger(FieldCryptor.class);
 
-    private FieldCryptor() {
+    private final AbstractCipher cipher;
+
+    private FieldCryptor(AbstractCipher cipher) {
+        this.cipher = cipher;
     }
 
-    public static <T> T decryptFields(AbstractCipher cipher, T source, Supplier<T> supplier) {
-        return taskTemplate(source, supplier.get(), cipherWrapper(cipher::decrypt));
+    public static FieldCryptor from(AbstractCipher cipher) {
+        return new FieldCryptor(cipher);
     }
 
-    public static <T> T decryptFields(AbstractCipher cipher, T source, T target) {
+    public <T> T encrypt(T source, Supplier<T> supplier) {
+        return encrypt(source, supplier.get());
+    }
+
+    public <T> T encrypt(T source, T target) {
+        return taskTemplate(source, target, cipherWrapper(cipher::encrypt));
+    }
+
+    public <T> T decrypt(T source, Supplier<T> supplier) {
+        return decrypt(source, supplier.get());
+    }
+
+    public <T> T decrypt(T source, T target) {
         return taskTemplate(source, target, cipherWrapper(cipher::decrypt));
     }
 
-    public static <T> T encryptFields(AbstractCipher cipher, T source, Supplier<T> supplier) {
-        return taskTemplate(source, supplier.get(), cipherWrapper(cipher::encrypt));
-    }
-
-    public static <T> T encryptFields(AbstractCipher cipher, T source, T target) {
-        return taskTemplate(source, target, cipherWrapper(cipher::encrypt));
+    public <T, R, E extends Exception> Function<T, R> cipherWrapper(FunctionWithException<T, R, E> fe) {
+        return data -> {
+            try {
+                return fe.apply(data);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException("Exception occurred.");
+            }
+        };
     }
 
     public static <T> T taskTemplate(T source, T target, Function<String, String> task) {
