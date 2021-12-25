@@ -15,10 +15,16 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class CipherFactoryTest {
 
-    static String name;
-    static String address;
-    static Person person;
+    static String name = "Daehan";
+    static String address = "Republic of Korea";
+    static Person person = new Person(name, address, 55);
     static AbstractCipher cipher;
+
+    static String vendor = "HYUNDAI";
+    static String designer = "Daehan";
+    static String madeIn = "Korea";
+    static int numberOfWheels = 4;
+    Car plainCar = new Car(vendor, designer, madeIn, numberOfWheels);
 
     @BeforeAll
     static void setUp() {
@@ -28,9 +34,6 @@ class CipherFactoryTest {
 
             CipherFactory.addCipher(algorithm.toString(), algorithm, key, iv, true);
         }
-        name = "Daehan";
-        address = "Republic of Korea";
-        person = new Person(name, address, 55);
         cipher = CipherFactory.getCipher(CryptographicAlgorithm.AES_CBC_PKCS5_PADDING.toString());
     }
 
@@ -59,12 +62,15 @@ class CipherFactoryTest {
         // given
 
         // when
-        person.setName(cipher.encrypt(name));
         FieldCryptor fieldCryptor = FieldCryptor.from(cipher);
-        Person decrypted = fieldCryptor.decrypt(person, Person::new);
+        Person encrypted = fieldCryptor.encrypt(person, Person::new);
+        Person decrypted = fieldCryptor.decrypt(encrypted, Person::new);
 
         // then
-        Assertions.assertEquals(name, decrypted.getName());
+        System.out.println("person : " + person);
+        System.out.println("encrypted : " + encrypted);
+        System.out.println("decrypted : " + decrypted);
+        Assertions.assertEquals(person, decrypted);
     }
 
     @Test
@@ -86,11 +92,23 @@ class CipherFactoryTest {
         // given
 
         // when
-        person.setName(cipher.encrypt(name));
-        Person decrypted = FieldCryptorUtils.decrypt(person, Person::new, cipherWrapper(cipher::decrypt));
+        Person encrypted = FieldCryptorUtils.encrypt(person, Person::new, cipherWrapper(cipher::encrypt));
+        Person decrypted = FieldCryptorUtils.decrypt(encrypted, Person::new, cipherWrapper(cipher::decrypt));
+
+        Car encryptedCar = FieldCryptorUtils.encrypt(plainCar, Car::new, cipherWrapper(cipher::encrypt));
+        Car decryptedCar = FieldCryptorUtils.decrypt(encryptedCar, Car::new, cipherWrapper(cipher::decrypt));
 
         // then
-        Assertions.assertEquals(name, decrypted.getName());
+        System.out.println("person : " + person);
+        System.out.println("encrypted : " + encrypted);
+        System.out.println("decrypted : " + decrypted);
+
+        System.out.println("plainCar : " + plainCar);
+        System.out.println("encrypted : " + encryptedCar);
+        System.out.println("decrypted : " + decryptedCar);
+
+        Assertions.assertEquals(person, decrypted);
+        Assertions.assertEquals(plainCar, decryptedCar);
     }
 
     @Test
@@ -101,7 +119,6 @@ class CipherFactoryTest {
         String designer = "Daehan";
         String madeIn = "Korea";
         int numberOfWheels = 4;
-        Car plainCar = new Car(vendor, designer, madeIn, numberOfWheels);
 
         // when
         FieldCryptor fc = FieldCryptor.from(cipher);

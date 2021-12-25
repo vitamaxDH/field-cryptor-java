@@ -2,6 +2,8 @@ package com.max.fieldcryptor;
 
 import com.max.fieldcryptor.annot.FieldCrypto;
 
+import java.util.Objects;
+
 public class Person {
 
     @FieldCrypto
@@ -57,4 +59,16 @@ public class Person {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Person person = (Person) o;
+        return age == person.age && Objects.equals(name, person.name) && Objects.equals(address, person.address);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, address, age);
+    }
 }

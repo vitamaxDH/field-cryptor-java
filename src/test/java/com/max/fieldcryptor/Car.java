@@ -2,6 +2,8 @@ package com.max.fieldcryptor;
 
 import com.max.fieldcryptor.annot.FieldCrypto;
 
+import java.util.Objects;
+
 @FieldCrypto
 public class Car {
 
@@ -47,5 +49,18 @@ public class Car {
                 ", madeIn='" + madeIn + '\'' +
                 ", numberOfWheels=" + numberOfWheels +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Car car = (Car) o;
+        return numberOfWheels == car.numberOfWheels && Objects.equals(vendor, car.vendor) && Objects.equals(designer, car.designer) && Objects.equals(madeIn, car.madeIn);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(vendor, designer, madeIn, numberOfWheels);
     }
 }

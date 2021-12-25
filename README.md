@@ -57,8 +57,9 @@ CipherFactory.addCipher(cipherKeyName, algorithm, key, iv, true);
 AbstractCipher cipher = CipherFactory.getCipher(cipherKeyName);
 Person person = new Person("VitaMax", "Suwon", 50);
 
-Person encryptedObj = FieldCryptor.encryptFields(cipher, person, Person::new);
-Person decryptedObj = FieldCryptor.decryptFields(cipher, encryptedObj, Person::new);
+FieldCryptor fieldCryptor = FieldCryptor.from(cipher);
+Person encryptedObj = fieldCryptor.encrypt(person, Person::new);
+Person decryptedObj = fieldCryptor.decrypt(encryptedObj, Person::new);
 ```
 
 4. Check the result
